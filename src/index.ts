@@ -6,6 +6,9 @@ import morgan from "morgan";
 import logger from "./config/logger";
 import cookieParser from "cookie-parser";
 import authRouter from "./router/auth.routes";
+import standardRateLimiter from "./security/rate-limiter";
+import {botUserAgentBlocker} from "./security/rate-limiter";
+import {suspiciousRequestBlocker} from "./security/rate-limiter";
 
 dotenv.config()
 
@@ -23,6 +26,9 @@ app.use(morgan('combined', {
         write: (message : string) => logger.info(message.trim())
     }
 }))
+app.use(botUserAgentBlocker)
+app.use(suspiciousRequestBlocker)
+app.use(standardRateLimiter)
 
 app.get("/health", (req, res) => {
     res.json({ message: "OK" , status: 200})
