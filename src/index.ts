@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import logger from "./config/logger";
 import cookieParser from "cookie-parser";
+import authRouter from "./router/auth.routes";
 
 dotenv.config()
 
@@ -22,6 +23,12 @@ app.use(morgan('combined', {
         write: (message : string) => logger.info(message.trim())
     }
 }))
+
+app.get("/health", (req, res) => {
+    res.json({ message: "OK" , status: 200})
+})
+
+app.use("/api/auth", authRouter)
 
 
 app.get("/", (req, res) => {
